@@ -212,11 +212,3 @@ Este Banco de Dados foi desenvolvido para fins de aprendizagem e prática em:
 Projeto acadêmico desenvolvido para estudo de banco de dados relacional com MySQL.
 
 ---
-
-Se quiser, posso criar também uma versão com:
-
-- capa mais visual e elegante
-- badges personalizadas
-- diagramas em ASCII
-- README em inglês
-- documentação mais técnica para apresentação acadêmica
