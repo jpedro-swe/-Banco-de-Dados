@@ -1,100 +1,160 @@
-# Banco de Dados - Atividade 3.0
+# Banco de Dados Acadêmico
 
-Um projeto de banco de dados relacional para gerenciar alunos, professores, disciplinas e turmas em um contexto acadêmico.
+<p align="center">
+  <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+  <img src="https://img.shields.io/badge/SQL-Database-025E8C?style=for-the-badge" alt="SQL Database" />
+  <img src="https://img.shields.io/badge/Modelagem-Relacional-6C63FF?style=for-the-badge" alt="Modelagem Relacional" />
+</p>
+
+<p align="center">
+  <strong>Projeto acadêmico para gestão de alunos, professores, disciplinas e turmas.</strong>
+</p>
 
 ## Visão Geral
 
-Este repositório contém um script SQL em MySQL que cria o schema `mydb` e as tabelas necessárias para representar o relacionamento entre:
+Este repositório contém um script SQL em MySQL para criação de um banco de dados relacional voltado ao ambiente acadêmico. O modelo foi desenvolvido para representar a estrutura básica de uma instituição de ensino, permitindo o cadastro de:
 
 - alunos
 - professores
 - disciplinas
 - turmas
 
-A estrutura foi desenvolvida em MySQL Workbench e pode ser executada diretamente em um servidor MySQL/MariaDB.
+A base foi criada em MySQL Workbench, com uso de chaves primárias, chaves estrangeiras e integridade referencial.
 
 ## Estrutura do Banco
 
-O banco é composto pelos seguintes objetos:
+O schema principal é `mydb` e contém as seguintes tabelas:
 
-### 1. `aluno`
-Armazena os dados dos estudantes.
+- `aluno`
+- `professor`
+- `disciplina`
+- `turma`
 
-Campos:
-- `id_aluno` — identificador único do aluno
-- `nome_aluno` — nome completo
-- `email_aluno` — e-mail institucional ou pessoal
-- `telefone_aluno` — telefone de contato
-- `sexo_aluno` — enumeração com valores `M` ou `F`
+## Diagrama de Entidades e Relacionamentos
 
-### 2. `professor`
+```mermaid
+erDiagram
+    ALUNO ||--o{ TURMA : participa
+    PROFESSOR ||--o{ TURMA : ministra
+    DISCIPLINA ||--o{ TURMA : possui
+
+    ALUNO {
+        int id_aluno PK
+        varchar nome_aluno
+        varchar email_aluno
+        varchar telefone_aluno
+        enum sexo_aluno
+    }
+
+    PROFESSOR {
+        int id_professor PK
+        varchar nome_professor
+        enum titulacao_professor
+    }
+
+    DISCIPLINA {
+        int id_disciplina PK
+        varchar nome_disciplina
+        char ch_disciplina
+    }
+
+    TURMA {
+        int disciplina_id_disciplina FK
+        int professor_id_professor FK
+        int aluno_id_aluno FK
+    }
+```
+
+## Tabelas
+
+### `aluno`
+Armazena os dados pessoais dos estudantes.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `id_aluno` | `INT UNSIGNED` | Identificador único |
+| `nome_aluno` | `VARCHAR(100)` | Nome completo |
+| `email_aluno` | `VARCHAR(100)` | E-mail de contato |
+| `telefone_aluno` | `VARCHAR(20)` | Número de telefone |
+| `sexo_aluno` | `ENUM('M', 'F')` | Sexo do aluno |
+
+### `professor`
 Armazena os dados dos docentes.
 
-Campos:
-- `id_professor` — identificador único do professor
-- `nome_professor` — nome completo
-- `titulacao_professor` — titulação (`Especialista`, `Mestre`, `Doutor`)
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `id_professor` | `INT UNSIGNED` | Identificador único |
+| `nome_professor` | `VARCHAR(100)` | Nome completo |
+| `titulacao_professor` | `ENUM('Especialista', 'Mestre', 'Doutor')` | Titulação acadêmica |
 
-### 3. `disciplina`
-Armazena as disciplinas ofertadas.
+### `disciplina`
+Armazena as disciplinas oferecidas.
 
-Campos:
-- `id_disciplina` — identificador único da disciplina
-- `nome_disciplina` — nome da disciplina
-- `ch_disciplina` — carga horária em formato de texto (`CHAR(3)`) 
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `id_disciplina` | `INT UNSIGNED` | Identificador único |
+| `nome_disciplina` | `VARCHAR(45)` | Nome da disciplina |
+| `ch_disciplina` | `CHAR(3)` | Carga horária |
 
-### 4. `turma`
-Representa a associação entre disciplina, professor e aluno.
+### `turma`
+Tabela de relacionamento que conecta disciplina, professor e aluno.
 
-Campos:
-- `disciplina_id_disciplina`
-- `professor_id_professor`
-- `aluno_id_aluno`
-
-Essa tabela funciona como uma tabela de relacionamento muitos-para-muitos entre disciplinas, professores e alunos.
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `disciplina_id_disciplina` | `INT UNSIGNED` | Referência à disciplina |
+| `professor_id_professor` | `INT UNSIGNED` | Referência ao professor |
+| `aluno_id_aluno` | `INT UNSIGNED` | Referência ao aluno |
 
 ## Relacionamentos
 
-- Um aluno pode participar de várias turmas.
-- Um professor pode lecionar várias disciplinas em diferentes turmas.
-- Uma disciplina pode ter várias turmas associadas.
+A modelagem utiliza relacionamento do tipo:
 
-As chaves estrangeiras garantem integridade referencial entre as tabelas.
+- muitos para muitos entre alunos e disciplinas por meio da tabela `turma`
+- cada turma é associada a:
+  - um aluno
+  - um professor
+  - uma disciplina
 
-## Script SQL
+As restrições de chave estrangeira garantem integridade referencial e consistência dos dados.
 
-O script principal está em:
+## Arquivo Principal
 
 - `atividade3.0.sql`
 
-Ele cria o schema, as tabelas e as constraints necessárias.
+Esse arquivo contém:
 
-## Como usar
+- criação do schema `mydb`
+- criação de todas as tabelas
+- definição das chaves primárias
+- criação das chaves estrangeiras
+- configuração do engine `InnoDB`
+
+## Como Executar
 
 ### Pré-requisitos
 
-- MySQL 8.x ou MariaDB
-- Cliente MySQL (terminal, Workbench ou outra ferramenta)
+- MySQL Server instalado
+- MySQL Workbench ou cliente SQL
 
-### Passo a passo
-
-1. Abra o terminal ou o MySQL Workbench.
-2. Conecte-se ao seu servidor MySQL.
-3. Execute o script SQL:
+### Opção 1: via terminal
 
 ```bash
 mysql -u root -p
 ```
 
-Depois, dentro do cliente MySQL:
+Depois, no console do MySQL:
 
 ```sql
 SOURCE atividade3.0.sql;
 ```
 
-Ou, se preferir, importe diretamente no Workbench.
+### Opção 2: via MySQL Workbench
 
-## Exemplo de uso
+1. Abra o MySQL Workbench.
+2. Conecte-se ao seu servidor.
+3. Importe ou execute o arquivo `atividade3.0.sql`.
+
+## Exemplos de Consulta
 
 ```sql
 USE mydb;
@@ -105,30 +165,58 @@ SELECT * FROM disciplina;
 SELECT * FROM turma;
 ```
 
+### Consultas úteis
+
+```sql
+SELECT a.nome_aluno, d.nome_disciplina
+FROM aluno a
+JOIN turma t ON t.aluno_id_aluno = a.id_aluno
+JOIN disciplina d ON d.id_disciplina = t.disciplina_id_disciplina;
+```
+
+```sql
+SELECT p.nome_professor, d.nome_disciplina
+FROM professor p
+JOIN turma t ON t.professor_id_professor = p.id_professor
+JOIN disciplina d ON d.id_disciplina = t.disciplina_id_disciplina;
+```
+
+## Objetivos do Projeto
+
+Este Banco de Dados foi desenvolvido para fins de aprendizagem e prática em:
+
+- modelagem de dados
+- normalização de tabelas
+- uso de chaves primárias e estrangeiras
+- criação de relacionamentos entre entidades
+- execução de scripts SQL em ambiente acadêmico
+
 ## Observações
 
 - O banco foi criado com o nome de schema `mydb`.
-- O script usa `ENGINE = InnoDB`, garantindo suporte a transações e integridade relacional.
-- A estrutura está pronta para expansão, como por exemplo:
+- A estrutura está pronta para extensão com novas entidades, como:
   - notas
-  - frequências
-  - calendário acadêmico
-  - curso e período
+  - frequência
+  - cursos
+  - períodos
+  - matrículas
 
-## Licença
+## Status do Projeto
 
-Este projeto foi desenvolvido para fins acadêmicos e de estudo.
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Completo-brightgreen?style=for-the-badge" alt="Status completo" />
+</p>
 
 ## Autor
 
-Este repositório foi criado para a atividade de banco de dados, com foco em modelagem relacional e criação de schema SQL.
+Projeto acadêmico desenvolvido para estudo de banco de dados relacional com MySQL.
 
 ---
 
-Se quiser, posso também criar uma versão do README com:
+Se quiser, posso criar também uma versão com:
 
-- visual mais profissional
-- badges e emojis
-- diagramas Mermaid
-- instruções de exportação/importação em MariaDB
-- um modelo de ER em ASCII/mermaid
+- capa mais visual e elegante
+- badges personalizadas
+- diagramas em ASCII
+- README em inglês
+- documentação mais técnica para apresentação acadêmica
